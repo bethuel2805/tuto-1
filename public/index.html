@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebRTC Video Chat</title>
+    <style>
+        .video-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+        video {
+            width: 400px;
+            background: #444;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+        #roomId {
+            padding: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <input type="text" id="roomId" placeholder="Entrez l'ID de la salle">
+        <button id="joinButton">Rejoindre la salle</button>
+    </div>
+    <div class="video-container">
+        <div>
+            <h3>Votre vidéo</h3>
+            <video controls id="localVideo" autoplay playsinline muted></video>
+        </div>
+        <div>
+            <h3>Vidéo distante</h3>
+            <video controls id="remoteVideo" autoplay playsinline></video>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
