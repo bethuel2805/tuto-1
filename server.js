@@ -1,12 +1,25 @@
 const express = require('express');
 const http = require('http');
-const socket = require('socket.io');
+const { Server } = require('socket.io');
+const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socket(server);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.NODE_ENV === 'production' 
+      ? 'https://votre-domaine.onrender.com' 
+      : 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
+});
 
 app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const rooms = new Map();
 
@@ -18,7 +31,7 @@ io.on('connection', socket => {
         const clients = io.sockets.adapter.rooms.get(roomId);
         const numClients = clients ? clients.size : 0;
 
-        if (numClients > 2) {
+        if (numClients > 5) {
             socket.emit('room-full');
             socket.leave(roomId);
         } else {
@@ -46,4 +59,7 @@ io.on('connection', socket => {
     });
 });
 
-server.listen(3000, () => console.log('Server running on port 3000'));
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
